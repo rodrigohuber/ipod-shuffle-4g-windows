@@ -1,0 +1,27 @@
+From ce67334c8b6b532e44a27d676c22132972a66afd Mon Sep 17 00:00:00 2001
+From: rodrigohuber <145042708+rodrigohuber@users.noreply.github.com>
+Date: Wed, 14 Oct 2026 22:39:59 -0300
+Subject: [PATCH 2/2] Compute relpath against the full root so results do not
+ depend on the current directory
+
+---
+ ipod-shuffle-4g.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/ipod-shuffle-4g.py b/ipod-shuffle-4g.py
+index 7c7734e..5f96728 100755
+--- a/ipod-shuffle-4g.py
++++ b/ipod-shuffle-4g.py
+@@ -626,7 +626,8 @@ class Shuffler(object):
+         self.tunessd = TunesSD(self)
+         for (dirpath, dirnames, filenames) in os.walk(self.path):
+             dirnames.sort()
+-            relpath = get_relpath(dirpath, self.path)
++            # relpath against the full root (get_relpath can reduce it to a bare "D:", which resolves against the current directory)
++            relpath = os.path.relpath(dirpath, self.path)
+             # Windows: compare paths with "/" separators, as the checks below expect
+             posix_relpath = relpath.replace(os.sep, "/")
+             posix_dirpath = dirpath.replace(os.sep, "/")
+-- 
+2.54.0.windows.1
+
